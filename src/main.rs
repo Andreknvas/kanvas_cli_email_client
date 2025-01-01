@@ -4,6 +4,7 @@ use clap::{Command, Arg};
 use std::env;
 use std::io::{self};
 use dotenv::dotenv;
+use validator::validate_email;
 
 #[tokio::main]
 async fn main() -> io::Result<()> {
@@ -43,11 +44,25 @@ async fn main() -> io::Result<()> {
         )
         .get_matches();
 
+    fn is_valid_email(email: &str) -> bool {
+        validate_email(email)
+    }
+
     
     let to = matches.value_of("to").expect("É obrigatório ter um destinatário");
+    if !is_valid_email(to) {
+        eprint!("Destinatário inválido.");
+        return Ok(());
+    }
+    
     let subject = matches.value_of("subject").unwrap_or("É necessário definir um assunto");
     let body = matches.value_of("body").unwrap_or("Conteúdo vazio");
+   
     let from = matches.value_of("from").unwrap_or("deve haver um endereço válido como: seuemail@example.com");
+    if !is_valid_email(from) {
+        eprint!("Remetente inválido!");
+        return Ok(());
+    }
 
     
     let smtp_server = env::var("SMTP_SERVER").expect("SMTP_SERVER não encontrado, favor definir um válido");
