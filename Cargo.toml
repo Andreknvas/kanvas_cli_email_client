@@ -1,0 +1,10 @@
+[package]
+name = "cliente_de_email_rust"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+lettre = "0.10"
+tokio = { version = "1", features = ["full"] }
+clap = "3.0"
+dotenv = "0.15"
